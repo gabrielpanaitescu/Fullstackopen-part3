@@ -24,8 +24,22 @@ const persons = [
   },
 ];
 
+app.get("/", (req, res) => {
+  res.send("Hello world!");
+});
+
 app.get("/api/persons", (req, res) => {
   res.json(persons);
+});
+
+app.get("/info", (req, res) => {
+  const time = new Date();
+  const numberOfPersons = persons.length;
+
+  res.send(
+    `<p>Phonebook has info for ${numberOfPersons} person/s</p>
+     <p>${time}</p>`
+  );
 });
 
 const PORT = 3001;
