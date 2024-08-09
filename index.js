@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 let persons = [
   {
@@ -61,8 +62,31 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
-const PORT = 3001;
+const generateId = () => {
+  while (true) {
+    const newId = Math.floor(Math.random() * 1000000);
 
+    if (!persons.some((person) => person.id === newId)) return newId;
+  }
+};
+
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+  if (!(body.name && body.number))
+    return res.status(400).json({ error: "Name and/or number are missing" });
+
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(newPerson);
+
+  res.json(newPerson);
+});
+
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
