@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-app.use(express.json());
 
 let persons = [
   {
@@ -24,6 +23,21 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
+
+const cors = require("cors");
+app.use(cors());
+
+app.use(express.json());
+
+const morgan = require("morgan");
+morgan.token("content", function (req, res) {
+  return JSON.stringify(req.body);
+});
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :content"
+  )
+);
 
 app.get("/info", (req, res) => {
   const time = new Date();
@@ -66,7 +80,7 @@ const generateId = () => {
   while (true) {
     const newId = Math.floor(Math.random() * 1000000);
 
-    if (!persons.some((person) => person.id === newId)) return newId;
+    if (!persons.some((person) => person.id === newId)) return String(newId);
   }
 };
 
@@ -74,6 +88,13 @@ app.post("/api/persons", (req, res) => {
   const body = req.body;
   if (!(body.name && body.number))
     return res.status(400).json({ error: "Name and/or number are missing" });
+
+  const isDuplicate = persons.some(
+    (person) => person.name.toLowerCase() === body.name.toLowerCase()
+  );
+
+  if (isDuplicate)
+    return res.status(409).json({ error: "Name already exists" });
 
   const newPerson = {
     name: body.name,
@@ -84,6 +105,10 @@ app.post("/api/persons", (req, res) => {
   persons = persons.concat(newPerson);
 
   res.json(newPerson);
+});
+
+app.use((req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
 });
 
 const PORT = 3001;
