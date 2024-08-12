@@ -5,13 +5,18 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf dist && cd ../Fullstackopen-part2/phonebook/ && npm run build && cp -r dist ../../Fullstackopen-part3-phonebook-api/",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.8",
     "nodemon": "^3.1.4"
   },
   "dependencies": {

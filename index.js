@@ -24,6 +24,8 @@ let persons = [
   },
 ];
 
+app.use(express.static("dist"));
+
 const cors = require("cors");
 app.use(cors());
 
@@ -111,7 +113,7 @@ app.use((req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
