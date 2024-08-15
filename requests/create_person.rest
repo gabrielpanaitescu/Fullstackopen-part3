@@ -1,7 +1,7 @@
-POST https://phonebook-backend-api-fso.fly.dev/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Another one",
-    "number": "545485345834"
+    "name": "Stored in MongoDB",
+    "number": "072346234234"
 }

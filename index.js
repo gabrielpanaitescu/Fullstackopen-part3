@@ -95,22 +95,22 @@ app.post("/api/persons", (req, res) => {
   if (!(body.name && body.number))
     return res.status(400).json({ error: "Name and/or number are missing" });
 
-  const isDuplicate = persons.some(
-    (person) => person.name.toLowerCase() === body.name.toLowerCase()
-  );
+  // need revision with MongoDB
+  // const isDuplicate = persons.some(
+  //   (person) => person.name.toLowerCase() === body.name.toLowerCase()
+  // );
+  // if (isDuplicate)
+  //   return res.status(409).json({ error: "Name already exists" });
 
-  if (isDuplicate)
-    return res.status(409).json({ error: "Name already exists" });
-
-  const newPerson = {
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
     id: generateId(),
-  };
+  });
 
-  persons = persons.concat(newPerson);
-
-  res.json(newPerson);
+  newPerson.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
 });
 
 app.use((req, res) => {
