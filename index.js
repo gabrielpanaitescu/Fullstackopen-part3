@@ -100,7 +100,7 @@ app.post("/api/persons", (req, res) => {
   if (!(body.name && body.number))
     return res.status(400).json({ error: "Name and/or number are missing" });
 
-  // need revision with MongoDB
+  // if needed, revise to work with MongoDB
   // const isDuplicate = persons.some(
   //   (person) => person.name.toLowerCase() === body.name.toLowerCase()
   // );
@@ -116,6 +116,26 @@ app.post("/api/persons", (req, res) => {
   newPerson.save().then((savedPerson) => {
     res.json(savedPerson);
   });
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(id, person, { new: true })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        res.json(updatedPerson);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.use((req, res) => {
